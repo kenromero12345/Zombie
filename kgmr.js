@@ -44,7 +44,7 @@ KGMR.prototype.selectAction = function () {
 	var rock = null;
     var noRockPlayer = null;
     this.isLeader = false;
-    //this.currZombie = null;
+  //  this.currZombie = null;
   //  this.shootZombie = false;
 	// var player = null;
 	// var zombieDistLim = 200;
@@ -57,7 +57,13 @@ KGMR.prototype.selectAction = function () {
         if (dist < closestZ) {
             closestZ = dist;
             zombie = ent;
-          //  this.currZombie = ent;
+        /*    for (var i = 0; i < this.game.players.length; i++) {
+                var temp = this.game.players[i];
+                if(zombie === temp.currZombie) {
+                    continue;
+                }
+            }
+            this.currZombie = ent; */
         }
     }
 
@@ -94,7 +100,7 @@ KGMR.prototype.selectAction = function () {
             leader = ent;
         }
     }
-
+/*
     var tempTarget;
     if (closestZ < 150) { //this.shootZombie
         tempTarget = zombie;
@@ -102,17 +108,20 @@ KGMR.prototype.selectAction = function () {
 	else if (this.rocks == 2 && noRockPlayer) {
 		tempTarget = noRockPlayer;
 	}
-    
+    */
     /*
     for (var i = 0; i < this.game.players.length; i++) {
 		var ent = this.game.players[i];
-        //if(this.currZombie === ent.currZombie) {
-        if(ent.selectAction().target === tempTarget) {
+        if(this.currZombie === ent.currZombie) {
+            this.shootZombie = false;
+            this.currZombie = null;
+        }
+     /*   if(ent.selectAction().target === tempTarget) {
             if(zombieArr.length > 1) {
                 action.target = zombieArr[1].zombie;
                 this.shootZombie = true;
             }
-        }
+        }*
         
           /*  if(distance(this.currZombie, this) < distance(ent.currZombie, this)) {
                // this.shootZombie = true;
@@ -142,35 +151,58 @@ KGMR.prototype.selectAction = function () {
 	//it tends to just be stuck there waiting for its doom
 	//&& adjust some numbers for optimality
 	//&& folow the leader mentality to collide speed bost
-	// make player with rock = 0 or 1(maybe) to follow rock = 1 or rock = 2
-
+    // make player with rock = 0 or 1(maybe) to follow rock = 1 or rock = 2
+    
     var tempDir;
 
-
-
-    if(closestZ < 10) {
+    if (!this.isLeader && distance(this,leader) >= 1 && zombie) {
+       // tempDir =  direction(leader, this);
         tempDir = direction(this, zombie);
+    } else if (!this.isLeader && distance(this, leader) < 30) {
+        return leader.selectAction();
     }
+
+
+
+    if(this.rocks === 0 && closestZ < 20) {
+        tempDir = direction(this,zombie);
+    }
+
     else if (closestR < closestZ || closestZ > 200) {
 		tempDir = direction(rock, this);
-	} 
-    else if (!this.isLeader && distance(this,leader) >= 1) {
-        tempDir = direction(leader, this);
-    } else if (!this.isLeader && distance(this, leader) < 5) {
-        tempDir = leader.selectAction();
-    } else if (this.rocks == 2 && zombie && this.cooldown == 0 && closestZ > 10) {
+    } else if (this.rocks > 0 && zombie && this.cooldown == 0 && closestZ > 10) { //20
 		tempDir = direction(zombie, this);
-	} else {//if (closestZ > 200) {
+	} else if (zombie) {//if (closestZ > 200) {
      tempDir = direction(this, zombie);
 		//TODO evasion upgrade
-	}
+	} else {
+        tempDir = direction(rock, this);
+    }
 	tempDir.x += tempDir.x * 10000;
 	tempDir.y += tempDir.y * 10000;
 	// tempDir.x -= this.velocity.x;
-	// tempDir.y -= this.velocity.y;
-	action.direction = tempDir;
-
-	if (closestZ < 150) {// && !this.shootZombie) { //this.shootZombie
+    // tempDir.y -= this.velocity.y;
+    
+    
+    action.direction = tempDir;
+/*
+    this.moreThanOne = false; 
+    for (var i = 0; i < this.game.players.length; i++) {
+		var ent = this.game.players[i];
+        if(this.currZombie === ent.currZombie) {
+            this.shootZombie = true;
+            ent.currZombie = null;
+            this.moreThanOne = true;
+            ent.moreThanOne = true;
+        }
+    }*/
+/*
+    if(this.moreThanOne && closestZ < 150 && this.shootZombie) {
+		action.throwRock = true;
+    	action.target = zombie;
+    }
+*/
+	if (closestZ < 150) {//140// && this.currZombie !== null) { //this.shootZombie && !this.moreThanOne
 		action.throwRock = true;
     	action.target = zombie;
  	}
