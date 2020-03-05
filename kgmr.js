@@ -121,9 +121,9 @@ KGMR.prototype.selectAction = function () {
         tempDir = leader.selectAction().direction;
     } else if (this.rocks == 2 && zombie && this.cooldown == 0 && closestZ > 20) {
 		tempDir = direction(zombie, this);
-	} else if (closestR < closestZ || closestZ > 200) {
+	} else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
 		tempDir = direction(rock, this);
-	} else {
+	} else  if (zombie) {
 		// tempDir = direction(this, zombie);
         //TODO evasion upgrade
         tempDir = {x:0, y:0};
@@ -134,7 +134,9 @@ KGMR.prototype.selectAction = function () {
             tempDir.x += zDir.x / distZ;
             tempDir.y += zDir.y / distZ;
         }   
-	}
+	} else {
+        tempDir = direction(leader, this);
+    }
 	tempDir.x += tempDir.x * 10000;
 	tempDir.y += tempDir.y * 10000;
 	// tempDir.x -= this.velocity.x;
