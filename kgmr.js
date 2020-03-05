@@ -118,7 +118,6 @@ KGMR.prototype.selectAction = function () {
     var tempDir;
     
     if (!this.isLeader && distance(this, leader) < 20) {
-        console.log("HELLO");
         tempDir = leader.selectAction().direction;
     } else if (this.rocks == 2 && zombie && this.cooldown == 0 && closestZ > 20) {
 		tempDir = direction(zombie, this);
