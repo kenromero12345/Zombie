@@ -137,6 +137,12 @@ KGMR.prototype.selectAction = function () {
 	} else {
         tempDir = direction(leader, this);
     }
+
+    if(this.x <= 10 && tempDir.x < 0 && this.x >= 790 && tempDir.x > 0) {
+        tempDir.x = 0;
+    } else if (this.y <= 10 && tempDir.y < 0 && this.y >= 790 && tempDir.y > 0) {
+        tempDir.y = 0;
+    }
 	tempDir.x += tempDir.x * 10000;
 	tempDir.y += tempDir.y * 10000;
 	// tempDir.x -= this.velocity.x;
