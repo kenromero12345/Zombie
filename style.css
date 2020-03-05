@@ -1,0 +1,114 @@
+canvas {
+    display: inline;
+    float: left;
+}
+
+div {
+    font: 16px arial, verdanna;
+    background-color: gray;
+    width: 730px;
+    display:inline-block;
+    vertical-align: middle;
+    text-align: center;
+}
+
+div div {
+    border: 5px solid black;
+    background-color: transparent;
+    height: 48px;
+    width: 344px;
+    display: inline-block;
+    margin: 3px;
+}
+
+#games {
+    border: 5px solid hotpink;
+    background-color: lightpink;
+    width: 708px;
+    height: 20px;
+}
+
+#timer {
+    border: 5px solid green;
+    background-color: lightgreen;
+    width: 708px;
+    height: 20px;
+}
+
+.name {
+    border: 2px solid transparent;
+    width: 340px;
+    height: 20px;
+    margin: 0px;
+}
+
+.kills {
+    border: 2px solid transparent;
+    height: 20px;
+    width: 80px;
+    display: inline-block;
+    margin: 0px;
+}
+
+.games {
+    border: 2px solid transparent;
+    height: 20px;
+    width: 80px;
+    display: inline-block;
+    margin: 0px;
+}
+
+.time {
+    border: 2px solid transparent;
+    height: 20px;
+    width: 110px;
+    display: inline-block;
+    margin: 0px;
+}
+
+.p1 {
+    border: 5px solid red;
+    background-color: yellowgreen;
+}
+
+.p2 {
+    border: 5px solid red;
+    background-color: orchid;
+}
+
+.p3 {
+    border: 5px solid red;
+    background-color: turquoise;
+}
+
+.p4 {
+    border: 5px solid red;
+    background-color: gold;
+}
+
+.p5 {
+    border: 5px solid red;
+    background-color: skyblue;
+}
+
+.p6 {
+    border: 5px solid red;
+    background-color: white;
+}
+
+.O {
+    color: blue;
+}
+
+.button {
+    border: 1px solid black;
+    background-color:lightcoral;
+    color: red;
+    border-radius: 4px;
+    font: 20px arial;
+    margin-top:5px;
+    padding-top: 5px;
+    display:block;
+    height: 30px;
+    width: 120px;
+}
