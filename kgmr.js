@@ -46,23 +46,32 @@ KGMR.prototype.selectAction = function () {
 	// var player = null;
 	// var zombieDistLim = 200;
 
+	// var zombies = []
     for (var i = 0; i < this.game.zombies.length; i++) {
         var ent = this.game.zombies[i];
         var dist = distance(ent, this);
+		// zombies.push({zombie:ent, dist:dist});
         if (dist < closestZ) {
             closestZ = dist;
             zombie = ent;
         }
     }
+	// zombies.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
 
+	var rocks = [];
 	for (var i = 0; i < this.game.rocks.length; i++) {
 		var ent = this.game.rocks[i];
 		var dist = distance(ent, this);
+		rocks.push({rock:ent, dist:dist});
 		if (dist < closestR) {
 			closestR = dist;
 			rock = ent;
 		}
 	}
+	rocks.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
+	// console.log(rocks);
+	this.rock = rock;
+	this.rockDist = closestR;
 
 	var players = [];
 	for (var i = 0; i < this.game.players.length; i++) {
@@ -113,16 +122,55 @@ KGMR.prototype.selectAction = function () {
         this.isLeader = true;
     }
 
+	var index = 0;
+	// var flag = true
+	// while (flag) {
+		// flag = false;
+		for (var i = 0; i < this.game.players.length; i++) {
+			var ent = this.game.players[i];
+			if (ent != this && ent.rock && ent.rock == this.rock) {
+				index++;
+				this.rock = rocks[index];
+				// this.rockDist =
+				// flag = true;
+				i--;
+			} else {
+				index = 0;
+			}
+		}
+	// }
 
+	// for (var i = 0; i < this.game.players.length; i++) {
+	// 	var ent = this.game.players[i];
+	// 	ent.rockIndex = 0;
+	// }
+	//
+	// var flag = true
+	// while (flag) {
+	// 	flag = false;
+	// 	for (var i = 0; i < this.game.players.length; i++) {
+	// 		var ent = this.game.players[i];
+	// 		if (ent != this && ent.rock && ent.rock == this.rock) {
+	// 			this.rockIndex++;
+	// 			this.rock = rocks[this.rockIndex];
+	// 			flag = true;
+	// 		}
+	// 	}
+	// }
+
+	// console.log(this.game.players)
 
     var tempDir;
 
     if (!this.isLeader && distance(this, leader) < 20) {
         tempDir = leader.selectAction().direction;
+		this.rock = null;
     } else if (this.rocks == 2 && zombie && this.cooldown == 0 && closestZ > 20) {
 		tempDir = direction(zombie, this);
 	} else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
-		tempDir = direction(rock, this);
+		// tempDir = direction(rock, this);
+		tempDir = direction(this.rock, this);
+		this.rock = null;
 	} else  if (zombie) {
 		// tempDir = direction(this, zombie);
         //TODO evasion upgrade
@@ -134,11 +182,13 @@ KGMR.prototype.selectAction = function () {
             tempDir.x += zDir.x / distZ;
             tempDir.y += zDir.y / distZ;
         }
+		this.rock = null;
 	} else {
         tempDir = direction(leader, this);
+		this.rock = null;
     }
-	tempDir.x += tempDir.x * 1000000;
-	tempDir.y += tempDir.y * 1000000;
+	tempDir.x += tempDir.x * 10000;
+	tempDir.y += tempDir.y * 10000;
 	// tempDir.x -= this.velocity.x;
 	// tempDir.y -= this.velocity.y;
 	if (this.x <= 10 && tempDir.x < 0 || this.x >= 790 & tempDir.x > 0) {
