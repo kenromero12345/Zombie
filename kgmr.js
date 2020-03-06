@@ -4,6 +4,8 @@
 
 // only change code in selectAction function()
 
+// Group Krome: Ken Gil Maningding Romero && Michael Zachary Loria
+
 function KGMR(game) {
     this.player = 1;
     this.radius = 10;
