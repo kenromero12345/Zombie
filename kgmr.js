@@ -1,8 +1,3 @@
-// find and replace KGMR with your initials (i.e. ABC)
-// change this.name = "Your Chosen Name"
-
-// only change code in selectAction function()
-
 // Group Krome: Ken Gil Romero && Michael Zachary Loria
 
 function KGMR(game) {
