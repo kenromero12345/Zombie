@@ -179,10 +179,10 @@ KGMR.prototype.selectAction = function () {
 		tempDir = direction(zombie, this);
 		this.rock = null;
 	}
-	else if (this.rocks == 1 && rocks[indexR] && rocks[indexR].dist + 5 < closestZ) {
+	else if (this.rocks == 1 && rocks[indexR] && rocks[indexR].dist + 5 < closestZ -100) {
 			tempDir = direction(this.rock, this);
 			this.zombie = null;
-		}
+	}
 	else if (this.rocks == 1 && zombie && this.cooldown == 0 && closestZ > 20) {
 			tempDir = direction(zombie, this);
 			this.rock = null;
