@@ -154,7 +154,19 @@ KGMR.prototype.selectAction = function () {
 
     var tempDir;
 
-     if (zombie) {
+    if (!this.isLeader && distance(this, leader) < 20) {
+        tempDir = leader.selectAction().direction;
+		this.rock = null;
+    } else if (this.rocks > 0 && zombie && this.cooldown == 0 && closestZ > 20) {
+		tempDir = direction(zombie, this);
+		this.rock = null;
+	}
+	// else if (rocks[index] && (rocks[index].dist < closestZ || closestZ > 200) && rock && this.rocks < 2) {
+	// 	tempDir = direction(this.rock, this);
+	// }
+	else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
+		tempDir = direction(rock, this);
+	} else  if (zombie) {
 		this.rock = null;
 		// tempDir = direction(this, zombie);
         //TODO evasion upgrade
