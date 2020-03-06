@@ -278,12 +278,6 @@ KGMR.prototype.selectAction = function () {
 		// action.target = zombies[indexZ].zombie;
 		ent.noRockPlayer = null;
  	}
-	// else if (this.rocks == 2 && zombie) {
-	// 	action.throwRock = true;
-	// 	action.target = zombie;
-	// 	// action.target = zombies[indexZ].zombie;
-	// 	ent.noRockPlayer = null;
-	// }
 	else if (this.rocks == 2 && noRockPlayer) {
 		// this.noRockPlayer = noRockPlayer;
 		// this.noRockPlayerDist = noRockPlayers[0].dist;
@@ -302,6 +296,12 @@ KGMR.prototype.selectAction = function () {
 			action.target = noRockPlayer;
 		}
     }
+	// else if (this.rocks == 2 && zombie) {
+	// 	action.throwRock = true;
+	// 	action.target = zombie;
+	// 	// action.target = zombies[indexZ].zombie;
+	// 	ent.noRockPlayer = null;
+	// }
 	else {
 		ent.noRockPlayer = null;
 	}
