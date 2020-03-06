@@ -154,19 +154,7 @@ KGMR.prototype.selectAction = function () {
 
     var tempDir;
 
-    if (!this.isLeader && distance(this, leader) < 20) {
-        tempDir = leader.selectAction().direction;
-		this.rock = null;
-    } else if (this.rocks > 0 && zombie && this.cooldown == 0 && closestZ > 20) {
-		tempDir = direction(zombie, this);
-		this.rock = null;
-	}
-	// else if (rocks[index] && (rocks[index].dist < closestZ || closestZ > 200) && rock && this.rocks < 2) {
-	// 	tempDir = direction(this.rock, this);
-	// }
-	else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
-		tempDir = direction(rock, this);
-	} else  if (zombie) {
+     if (zombie) {
 		this.rock = null;
 		// tempDir = direction(this, zombie);
         //TODO evasion upgrade
@@ -174,10 +162,26 @@ KGMR.prototype.selectAction = function () {
         for (var j = 0; j < this.game.zombies.length; j++) {
             var entZ = this.game.zombies[j];
             var distZ = distance(entZ, this);
-            var zDir = direction(this, zombie);
+            var zDir = direction(this, entZ);
             tempDir.x += zDir.x / distZ;
             tempDir.y += zDir.y / distZ;
         }
+		var distZ = distance({x:0, y: 0}, this)
+		var zDir = direction(this, {x:0, y: 0});
+		tempDir.x += zDir.x / distZ;
+		tempDir.y += zDir.y / distZ;
+		distZ = distance({x:800, y: 0}, this)
+		zDir = direction(this, {x:800, y: 0});
+		tempDir.x += zDir.x / distZ;
+		tempDir.y += zDir.y / distZ;
+		distZ = distance({x:0, y: 800}, this)
+		zDir = direction(this, {x:0, y: 800});
+		tempDir.x += zDir.x / distZ;
+		tempDir.y += zDir.y / distZ;
+		distZ = distance({x:800, y: 800}, this)
+		zDir = direction(this, {x:800, y: 800});
+		tempDir.x += zDir.x / distZ;
+		tempDir.y += zDir.y / distZ;
 	} else {
 		this.rock = null;
         tempDir = direction(leader, this);
