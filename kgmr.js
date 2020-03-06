@@ -74,7 +74,7 @@ KGMR.prototype.selectAction = function () {
                 var entZ = this.game.zombies[j];
                 var distZ = distance(entZ, ent);
                 tempPlayer.totalDist += distZ;
-            }            
+            }
             players.push(tempPlayer);
 			if (dist < closestP) {
 				closestP = dist;
@@ -85,11 +85,15 @@ KGMR.prototype.selectAction = function () {
 
 	players.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
 
+	var noRockPlayers = [];
 	for (var i = 0; i < players.length; i++) {
 		if (players[i].player.rocks == 0) {
-			noRockPlayer = players[i]
-			break;
+			noRockPlayers.push(players[i]);
 		}
+	}
+
+	if (noRockPlayers.length > 0) {
+		noRockPlayer = noRockPlayers[0];
 	}
 
 	//TODO
@@ -98,7 +102,7 @@ KGMR.prototype.selectAction = function () {
 	//&& adjust some numbers for optimality
 	//&& folow the leader mentality to collide speed bost
     // make player with rock = 0 or 1(maybe) to follow rock = 1 or rock = 2
-    
+
     var leaderBoolean = false;
     var leader = this;
     for (var i = 0; i < this.game.players.length; i++) {
@@ -111,12 +115,12 @@ KGMR.prototype.selectAction = function () {
 
     if(!leaderBoolean) {
         this.isLeader = true;
-    } 
+    }
 
 
 
     var tempDir;
-    
+
     if (!this.isLeader && distance(this, leader) < 20) {
         tempDir = leader.selectAction().direction;
     } else if (this.rocks > 0 && zombie && this.cooldown == 0 && closestZ > 20) {
@@ -133,7 +137,7 @@ KGMR.prototype.selectAction = function () {
             var zDir = direction(this, zombie);
             tempDir.x += zDir.x / distZ;
             tempDir.y += zDir.y / distZ;
-        }   
+        }
 	} else {
         tempDir = direction(leader, this);
     }
@@ -154,8 +158,20 @@ KGMR.prototype.selectAction = function () {
     	action.target = zombie;
  	}
 	else if (this.rocks == 2 && noRockPlayer) {
-		action.throwRock = true;
-		action.target = noRockPlayer;
+		this.noRockPlayer = noRockPlayer;
+		var index = 0;
+		for (var i = 0; i < this.game.players.length; i++) {
+			var ent = this.game.players[i];
+			if (ent != this && ent.noRockPlayer && ent.noRockPlayer == this.noRockPlayer) {
+				index++;
+				this.noRockPlayer = noRockPlayers[index];
+				noRockPlayer = noRockPlayers[index];
+			}
+		}
+		if (noRockPlayer) {
+			action.throwRock = true;
+			action.target = noRockPlayer;
+		}
     }
     else if (this.rocks == 2 && players.length > 0) {
         players.sort((a, b) => (a.totalDist > b.totalDist) ? 1 : -1);
