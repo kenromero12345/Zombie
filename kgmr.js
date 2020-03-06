@@ -55,15 +55,28 @@ KGMR.prototype.selectAction = function () {
         }
     }
 
+	// for (var i = 0; i < this.game.rocks.length; i++) {
+	// 	var ent = this.game.rocks[i];
+	// 	var dist = distance(ent, this);
+	// 	if (dist < closestR) {
+	// 		closestR = dist;
+	// 		rock = ent;
+	// 	}
+	// }
+	var rocks = [];
 	for (var i = 0; i < this.game.rocks.length; i++) {
 		var ent = this.game.rocks[i];
 		var dist = distance(ent, this);
+		rocks.push({rock:ent, dist:dist});
 		if (dist < closestR) {
 			closestR = dist;
 			rock = ent;
 		}
 	}
-
+	rocks.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
+	// console.log(rocks);
+	this.rock = rock;
+	
 	var players = [];
 	for (var i = 0; i < this.game.players.length; i++) {
 		var ent = this.game.players[i];
