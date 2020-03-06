@@ -42,14 +42,30 @@ KGMR.prototype.selectAction = function () {
 	// var player = null;
 	// var zombieDistLim = 200;
 
-    for (var i = 0; i < this.game.zombies.length; i++) {
-        var ent = this.game.zombies[i];
-        var dist = distance(ent, this);
-        if (dist < closestZ) {
-            closestZ = dist;
-            zombie = ent;
-        }
-    }
+    // for (var i = 0; i < this.game.zombies.length; i++) {
+    //     var ent = this.game.zombies[i];
+    //     var dist = distance(ent, this);
+    //     if (dist < closestZ) {
+    //         closestZ = dist;
+    //         zombie = ent;
+    //     }
+    // }
+	var zombies = []
+	for (var i = 0; i < this.game.zombies.length; i++) {
+		var ent = this.game.zombies[i];
+		var dist = distance(ent, this);
+		zombies.push({zombie:ent, dist:dist});
+		if (dist < closestZ) {
+			closestZ = dist;
+			zombie = ent;
+		}
+	}
+
+	zombies.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
+	if (zombies[0]) {
+		this.zombie = zombies[0].zombies;
+		this.zombieDist = zombies[0].dist;
+	}
 
 	// for (var i = 0; i < this.game.rocks.length; i++) {
 	// 	var ent = this.game.rocks[i];
@@ -71,7 +87,8 @@ KGMR.prototype.selectAction = function () {
 	}
 	rocks.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
 	// console.log(rocks);
-	this.rock = rock;
+	this.rock = rocks[0].rock;
+	this.rockDist = rocks[0].dist;
 
 	var players = [];
 	for (var i = 0; i < this.game.players.length; i++) {
@@ -101,8 +118,10 @@ KGMR.prototype.selectAction = function () {
 		}
 	}
 
+	// var noRockPlayerDist;
 	if (noRockPlayers.length > 0) {
-		noRockPlayer = noRockPlayers[0];
+		noRockPlayer = noRockPlayers[0].player;
+		// noRockPlayerDist = noRockPlayers[0].dist;
 	}
 
 	//TODO
@@ -126,23 +145,23 @@ KGMR.prototype.selectAction = function () {
         this.isLeader = true;
     }
 
-	// 	// for (var i = 0; i < this.game.players.length; i++) {
-	// 	// 	var ent = this.game.players[i];
-	// 	// 	if (ent != this && ent.zombie && ent.zombie == this.zombie) {
-	// 	// 		index++;
-	// 	// 		this.zombie = zombies[index];
-	// 	// 		// this.rockDist =
-	// 	// 		// flag = true;
-	// 	// 		i--;
-	// 	// 	}
-	var index = 0;
+	var indexZ = 0;
 	for (var i = 0; i < this.game.players.length; i++) {
 		var ent = this.game.players[i];
-		if (ent != this && ent.rock && ent.rock == this.rock) {
-			index++;
-			this.rock = rocks[index];
-			// this.rockDist =
-			// flag = true;
+		if (ent != this && ent.zombie && zombies[indexZ+1] && ent.zombie == this.zombie && ent.zombieDist < this.zombieDist) {
+			indexZ++;
+			this.zombie = zombies[indexZ].zombie;
+			this.zombieDist = zombies[indexZ].dist;
+			i--;
+		}
+	}
+	var indexR = 0;
+	for (var i = 0; i < this.game.players.length; i++) {
+		var ent = this.game.players[i];
+		if (ent != this && ent.rock && rocks[indexR+1] && ent.rock == this.rock && ent.rockDist < this.rockDist) {
+			indexR++;
+			this.rock = rocks[indexR].rock;
+			this.rockDist = rocks[indexR].dist;
 			i--;
 		}
 	}
@@ -152,17 +171,21 @@ KGMR.prototype.selectAction = function () {
     if (!this.isLeader && distance(this, leader) < 20) {
         tempDir = leader.selectAction().direction;
 		this.rock = null;
+		this.zombie = null;
     } else if (this.rocks > 0 && zombie && this.cooldown == 0 && closestZ > 20) {
 		tempDir = direction(zombie, this);
 		this.rock = null;
 	}
-	// else if (rocks[index] && (rocks[index].dist < closestZ || closestZ > 200) && rock && this.rocks < 2) {
-	// 	tempDir = direction(this.rock, this);
+	else if (rocks[indexR] && (rocks[indexR].dist < closestZ || closestZ > 200) && rock && this.rocks < 2) {
+		tempDir = direction(this.rock, this);
+		this.zombie = null;
+	}
+	// else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
+	// 	tempDir = direction(rock, this);
 	// }
-	else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
-		tempDir = direction(rock, this);
-	} else  if (zombie) {
+	else  if (zombie) {
 		this.rock = null;
+		this.zombie = null;
 		// tempDir = direction(this, zombie);
         //TODO evasion upgrade
         tempDir = {x:0, y:0};
@@ -191,6 +214,7 @@ KGMR.prototype.selectAction = function () {
 		tempDir.y += zDir.y / distZ;
 	} else {
 		this.rock = null;
+		this.zombie = null
         tempDir = direction(leader, this);
     }
 
@@ -237,34 +261,40 @@ KGMR.prototype.selectAction = function () {
 
 	action.direction = tempDir;
 
-	if (closestZ < 140) {
+	if (closestZ< 120) {
 		action.throwRock = true;
     	action.target = zombie;
+		// action.target = zombies[indexZ].zombie;
+		ent.noRockPlayer = null;
  	}
 	else if (this.rocks == 2 && noRockPlayer) {
-		this.noRockPlayer = noRockPlayer;
+		// this.noRockPlayer = noRockPlayer;
+		// this.noRockPlayerDist = noRockPlayers[0].dist;
 		var index = 0;
 		for (var i = 0; i < this.game.players.length; i++) {
 			var ent = this.game.players[i];
-			if (ent != this && ent.noRockPlayer && ent.noRockPlayer == this.noRockPlayer) {
+			if (ent != this && ent.noRockPlayer && noRockPlayers[index+1] && ent.noRockPlayer == this.noRockPlayer && ent.noRockPlayerDist < this.noRockPlayerDist) {
 				index++;
-				this.noRockPlayer = noRockPlayers[index];
-				noRockPlayer = noRockPlayers[index];
+				this.noRockPlayer = noRockPlayers[index].player;
+				this.noRockPlayerDist = noRockPlayer[index].dist;
+				noRockPlayer = noRockPlayers[index].player;
 			}
 		}
 		if (noRockPlayer) {
 			action.throwRock = true;
 			action.target = noRockPlayer;
 		}
-    }
-    else if (this.rocks == 2 && players.length > 0) {
-        players.sort((a, b) => (a.totalDist > b.totalDist) ? 1 : -1);
-        if (players[0].totalDist / this.game.zombies.length < 100) {
-            // console.log(players)
-            // action.throwRock = true;
-            // action.target = players[0];
-        }
-    }
+    } else {
+		ent.noRockPlayer = null;
+	}
+    // else if (this.rocks == 2 && players.length > 0) {
+    //     players.sort((a, b) => (a.totalDist > b.totalDist) ? 1 : -1);
+    //     if (players[0].totalDist / this.game.zombies.length < 100) {
+    //         // console.log(players)
+    //         // action.throwRock = true;
+    //         // action.target = players[0];
+    //     }
+    // }
 
 	// action.direction = direction(this, zombie);
 	// if (this.x < 100) {
