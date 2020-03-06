@@ -87,8 +87,10 @@ KGMR.prototype.selectAction = function () {
 	}
 	rocks.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
 	// console.log(rocks);
-	this.rock = rocks[0].rock;
-	this.rockDist = rocks[0].dist;
+	if (rocks[0]) {
+		this.rock = rocks[0].rock;
+		this.rockDist = rocks[0].dist;
+	}
 
 	var players = [];
 	for (var i = 0; i < this.game.players.length; i++) {
@@ -172,18 +174,27 @@ KGMR.prototype.selectAction = function () {
         tempDir = leader.selectAction().direction;
 		this.rock = null;
 		this.zombie = null;
-    } else if (this.rocks > 0 && zombie && this.cooldown == 0 && closestZ > 20) {
+    }
+	else if (this.rocks == 2 && zombie && this.cooldown == 0 && closestZ > 20) {
 		tempDir = direction(zombie, this);
 		this.rock = null;
 	}
-	else if (rocks[indexR] && (rocks[indexR].dist < closestZ || closestZ > 200) && rock && this.rocks < 2) {
+	else if (this.rocks == 1 && rocks[indexR] && rocks[indexR].dist + 5 < closestZ) {
+			tempDir = direction(this.rock, this);
+			this.zombie = null;
+		}
+	else if (this.rocks == 1 && zombie && this.cooldown == 0 && closestZ > 20) {
+			tempDir = direction(zombie, this);
+			this.rock = null;
+	}
+	else if (rocks[indexR] && (rocks[indexR].dist + 5 < closestZ || closestZ > 200) && rock && this.rocks < 2) {
 		tempDir = direction(this.rock, this);
 		this.zombie = null;
 	}
 	// else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
 	// 	tempDir = direction(rock, this);
 	// }
-	else  if (zombie) {
+	else if (zombie) {
 		this.rock = null;
 		this.zombie = null;
 		// tempDir = direction(this, zombie);
@@ -261,12 +272,18 @@ KGMR.prototype.selectAction = function () {
 
 	action.direction = tempDir;
 
-	if (closestZ< 120) {
+	if (closestZ < 120 && zombie) {
 		action.throwRock = true;
     	action.target = zombie;
 		// action.target = zombies[indexZ].zombie;
 		ent.noRockPlayer = null;
  	}
+	// else if (this.rocks == 2 && zombie) {
+	// 	action.throwRock = true;
+	// 	action.target = zombie;
+	// 	// action.target = zombies[indexZ].zombie;
+	// 	ent.noRockPlayer = null;
+	// }
 	else if (this.rocks == 2 && noRockPlayer) {
 		// this.noRockPlayer = noRockPlayer;
 		// this.noRockPlayerDist = noRockPlayers[0].dist;
@@ -284,7 +301,8 @@ KGMR.prototype.selectAction = function () {
 			action.throwRock = true;
 			action.target = noRockPlayer;
 		}
-    } else {
+    }
+	else {
 		ent.noRockPlayer = null;
 	}
     // else if (this.rocks == 2 && players.length > 0) {
