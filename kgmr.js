@@ -1,3 +1,4 @@
+//By: Ken Romero && Michael Loria
 
 // find and replace KGMR with your initials (i.e. ABC)
 // change this.name = "Your Chosen Name"
@@ -159,7 +160,7 @@ KGMR.prototype.selectAction = function () {
     } else if (this.rocks > 0 && zombie && this.cooldown == 0 && closestZ > 20) {
 		tempDir = direction(zombie, this);
 		this.rock = null;
-	} 
+	}
 	// else if (rocks[index] && (rocks[index].dist < closestZ || closestZ > 200) && rock && this.rocks < 2) {
 	// 	tempDir = direction(this.rock, this);
 	// }
