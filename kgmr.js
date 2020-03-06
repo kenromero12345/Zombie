@@ -192,7 +192,7 @@ KGMR.prototype.selectAction = function () {
 	if (this.y <= 10 & tempDir.y < 0 || this.y >= 790 & tempDir.y > 0) {
 		tempDir.y = 0;
 	}
-	if (tempDir.x == 0 && tempDir.y == 0) {
+	if (zombie && tempDir.x == 0 && tempDir.y == 0) {
 		if (this.x < 25 && this.y < 25) {
 			if (distance({x:10, y: 0}, zombie) < distance({x:0, y: 10}, zombie)) {
 				tempDir.y = 1;
