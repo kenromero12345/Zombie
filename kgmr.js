@@ -76,7 +76,7 @@ KGMR.prototype.selectAction = function () {
 	rocks.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
 	// console.log(rocks);
 	this.rock = rock;
-	
+
 	var players = [];
 	for (var i = 0; i < this.game.players.length; i++) {
 		var ent = this.game.players[i];
@@ -139,17 +139,34 @@ KGMR.prototype.selectAction = function () {
 	// 	// 		// flag = true;
 	// 	// 		i--;
 	// 	// 	}
-
+	var index = 0;
+	for (var i = 0; i < this.game.players.length; i++) {
+		var ent = this.game.players[i];
+		if (ent != this && ent.rock && ent.rock == this.rock) {
+			index++;
+			this.rock = rocks[index];
+			// this.rockDist =
+			// flag = true;
+			i--;
+		}
+	}
 
     var tempDir;
 
     if (!this.isLeader && distance(this, leader) < 20) {
         tempDir = leader.selectAction().direction;
+		this.rock = null;
     } else if (this.rocks > 0 && zombie && this.cooldown == 0 && closestZ > 20) {
 		tempDir = direction(zombie, this);
-	} else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
+		this.rock = null;
+	}
+	// else if (rocks[index] && (rocks[index].dist < closestZ || closestZ > 200) && rock && this.rocks < 2) {
+	// 	tempDir = direction(this.rock, this);
+	// }
+	else if ((closestR < closestZ || closestZ > 200) && rock && this.rocks < 2) {
 		tempDir = direction(rock, this);
 	} else  if (zombie) {
+		this.rock = null;
 		// tempDir = direction(this, zombie);
         //TODO evasion upgrade
         tempDir = {x:0, y:0};
@@ -161,6 +178,7 @@ KGMR.prototype.selectAction = function () {
             tempDir.y += zDir.y / distZ;
         }
 	} else {
+		this.rock = null;
         tempDir = direction(leader, this);
     }
 
@@ -170,9 +188,41 @@ KGMR.prototype.selectAction = function () {
     // tempDir.y -= this.velocity.y;
     if (this.x <= 10 && tempDir.x < 0 || this.x >= 790 & tempDir.x > 0) {
 		tempDir.x = 0;
-	} else if (this.y <= 10 & tempDir.y < 0 || this.y >= 790 & tempDir.y > 0) {
+	}
+	if (this.y <= 10 & tempDir.y < 0 || this.y >= 790 & tempDir.y > 0) {
 		tempDir.y = 0;
 	}
+	if (tempDir.x == 0 && tempDir.y == 0) {
+		if (this.x < 25 && this.y < 25) {
+			if (distance({x:10, y: 0}, zombie) < distance({x:0, y: 10}, zombie)) {
+				tempDir.y = 1;
+			} else {
+				tempDir.x = 1;
+			}
+		}
+		if (this.x > 775 && this.y > 775) {
+			if (distance({x:800-10, y: 800}, zombie) < distance({x:800, y: 800-10}, zombie)) {
+				tempDir.y = 1;
+			} else {
+				tempDir.x = 1;
+			}
+		}
+		if (this.x < 25 && this.y > 775) {
+			if (distance({x:10, y: 800}, zombie) < distance({x:0, y: 800-10}, zombie)) {
+				tempDir.y = 1;
+			} else {
+				tempDir.x = 1;
+			}
+		}
+		if (this.x > 775 && this.y < 25) {
+			if (distance({x:800-10, y: 0}, zombie) < distance({x:800, y: 10}, zombie)) {
+				tempDir.y = 1;
+			} else {
+				tempDir.x = 1;
+			}
+		}
+	}
+
 	action.direction = tempDir;
 
 	if (closestZ < 140) {
