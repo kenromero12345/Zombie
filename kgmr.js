@@ -134,10 +134,19 @@ KGMR.prototype.selectAction = function () {
 				// this.rockDist =
 				// flag = true;
 				i--;
-			} else {
-				index = 0;
 			}
 		}
+	// }
+	// index = 0;
+	// for (var i = 0; i < this.game.players.length; i++) {
+	// 	var ent = this.game.players[i];
+	// 	if (ent != this && ent.zombie && ent.zombie == this.zombie) {
+	// 		index++;
+	// 		this.zombie = zombie[index];
+	// 		// this.rockDist =
+	// 		// flag = true;
+	// 		i--;
+	// 	}
 	// }
 
 	// for (var i = 0; i < this.game.players.length; i++) {
